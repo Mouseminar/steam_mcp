@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: steam-mcp-server
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python mcp_server.py
+    envVars:
+      - key: DASHSCOPE_API_KEY
+        sync: false
+      - key: DASHSCOPE_BASE_URL
+        value: https://dashscope.aliyuncs.com/compatible-mode/v1
+      - key: LLM_MODEL
+        value: qwen-plus
+      - key: LLM_TIMEOUT
+        value: 300
+      - key: STEAM_MAX_SEARCH_RESULTS
+        value: 20
+      - key: STEAM_MAX_OUTPUT_RESULTS
+        value: 5
+      - key: LOG_LEVEL
+        value: INFO
+      - key: PYTHON_VERSION
+        value: 3.11.0
