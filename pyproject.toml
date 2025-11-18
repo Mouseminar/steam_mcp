@@ -1,0 +1,20 @@
+[project]
+name = "steam-game-recommender-mcp"
+version = "0.1.0"
+description = "Steam游戏智能推荐MCP服务器 - 基于LLM的智能游戏推荐系统"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "beautifulsoup4>=4.12.0",
+    "fastmcp>=2.5.1",
+    "openai>=1.0.0",
+    "python-dotenv>=1.0.0",
+    "requests>=2.31.0",
+]
+
+[tool.uv]
+dev-dependencies = []
+
+[[tool.uv.index]]
+url = "https://mirrors.aliyun.com/pypi/simple/"
+default = true

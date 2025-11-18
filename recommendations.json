@@ -1,0 +1,154 @@
+{
+  "query": "推荐一些冒险游戏，70元以内",
+  "analysis": {
+    "keywords": [
+      "adventure"
+    ],
+    "max_price": 70.0,
+    "min_price": 0.0,
+    "tags": [
+      "冒险"
+    ],
+    "genres": [
+      "Adventure"
+    ],
+    "preferences": {
+      "multiplayer": false,
+      "singleplayer": true,
+      "story_rich": false,
+      "open_world": false,
+      "other": ""
+    }
+  },
+  "total_found": 11,
+  "total_evaluated": 11,
+  "recommendations": [
+    {
+      "name": "It Takes Two Friend's Pass",
+      "app_id": "1426210",
+      "price": 0.0,
+      "original_price": 0.0,
+      "discount": 0,
+      "tags": [
+        "动作",
+        "冒险",
+        "多人",
+        "合作",
+        "在线合作"
+      ],
+      "url": "https://store.steampowered.com/app/2995920/It_Takes_Two_Friends_Pass/?snr=1_7_7_151_150_1",
+      "release_date": "2021 年 5 月 25 日",
+      "description": "游玩《双人成行》，踏上生命中最疯狂的旅程。利用好友通行证*邀请一位好友免费游玩，共同体验多种多样的乐趣，享受颠覆性的玩法挑战。",
+      "recommendation_reason": "完全符合用户预算和冒险需求，支持合作玩法，内容丰富且免费，极具性价比。",
+      "recommendation_score": 95,
+      "highlights": [
+        "免费游玩",
+        "双人合作冒险",
+        "多样玩法挑战"
+      ]
+    },
+    {
+      "name": "Terraria",
+      "app_id": "105600",
+      "price": 42.0,
+      "original_price": 42.0,
+      "discount": 0,
+      "tags": [
+        "动作",
+        "冒险",
+        "独立",
+        "角色扮演",
+        "单人",
+        "多人",
+        "玩家对战"
+      ],
+      "url": "https://store.steampowered.com/app/105600/Terraria/?snr=1_7_7_151_150_1",
+      "release_date": "2011 年 5 月 16 日",
+      "description": "挖掘，战斗，探索，建造！在这个动感十足的冒险游戏里没有什么是不可能的。四人包依然可用！",
+      "recommendation_reason": "Terraria是一款高自由度的冒险游戏，内容丰富，价格仅¥42，完美符合您的预算和冒险类需求。",
+      "recommendation_score": 95,
+      "highlights": [
+        "挖掘与建造",
+        "战斗与探索",
+        "支持多人合作"
+      ]
+    },
+    {
+      "name": "粒粒的小人国",
+      "app_id": "3767320",
+      "price": 0.0,
+      "original_price": 0.0,
+      "discount": 0,
+      "tags": [
+        "冒险",
+        "休闲",
+        "角色扮演",
+        "模拟",
+        "免费开玩",
+        "单人",
+        "多人",
+        "合作"
+      ],
+      "url": "https://store.steampowered.com/app/3767320/_/?snr=1_7_7_151_150_1",
+      "release_date": "即将宣布",
+      "description": "《粒粒的小人国》是小人国主题生活模拟游戏。意外变小的“我”，和邻居“粒粒”，在书桌一角建造你们的家。在这里，「我」和粒粒们一起种田、组乐队，探索世界，以变小的视角体验世界，重新发现寻常的美好。",
+      "recommendation_reason": "这是一款免费的冒险生活模拟游戏，玩法温馨独特，完美符合70元以内的预算和冒险类需求。",
+      "recommendation_score": 95,
+      "highlights": [
+        "小人国视角冒险",
+        "种田与探索结合",
+        "免费开玩"
+      ]
+    },
+    {
+      "name": "Alkahest",
+      "app_id": "3016620",
+      "price": 0.0,
+      "original_price": 0.0,
+      "discount": 0,
+      "tags": [
+        "动作",
+        "冒险",
+        "角色扮演",
+        "单人",
+        "Steam 成就",
+        "完全支持控制器"
+      ],
+      "url": "https://store.steampowered.com/app/3016620/Alkahest/?snr=1_7_7_151_150_1",
+      "release_date": "即将宣布",
+      "description": "《炼金之境》是一款设定在阴暗中世纪世界的动作冒险RPG，主打令人满足的近战和高度互动的环境。探索真实地点，学习炼金术，为你的家族赢得声誉。",
+      "recommendation_reason": "完全符合用户预算和冒险需求，动作冒险RPG类型结合炼金术与中世纪世界观，内容丰富且免费。",
+      "recommendation_score": 95,
+      "highlights": [
+        "免费游戏",
+        "高度互动环境",
+        "炼金术系统"
+      ]
+    },
+    {
+      "name": "Hollow Knight",
+      "app_id": "367520",
+      "price": 58.0,
+      "original_price": 58.0,
+      "discount": 0,
+      "tags": [
+        "动作",
+        "冒险",
+        "独立",
+        "单人",
+        "Steam 成就",
+        "完全支持控制器"
+      ],
+      "url": "https://store.steampowered.com/app/367520/Hollow_Knight/?snr=1_7_7_151_150_1",
+      "release_date": "2017 年 2 月 24 日",
+      "description": "在《空洞骑士》中打造属于自己的冒险之旅！穿越一个庞大却废弃的属于昆虫与英雄的王国，开启史诗般的冒险旅程。探索幽深的洞穴，与被感染的生物战斗，结识友好又奇异的昆虫，整个游戏都是经典的手绘 2D 风格。",
+      "recommendation_reason": "《空洞骑士》是一款高口碑的2D动作冒险游戏，价格在预算内，完美契合用户对冒险类游戏的需求。",
+      "recommendation_score": 95,
+      "highlights": [
+        "手绘2D美术风格",
+        "庞大的开放世界探索",
+        "深度战斗与剧情"
+      ]
+    }
+  ]
+}

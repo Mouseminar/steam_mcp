@@ -1,0 +1,497 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Steam游戏推荐MCP服务",
+    "description": "Steam游戏智能推荐系统，提供游戏搜索、折扣查询、热门排行、详情获取等功能",
+    "version": "v0.2.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000"
+    }
+  ],
+  "paths": {
+    "/mcp/tools/recommend_games": {
+      "post": {
+        "summary": "智能推荐游戏",
+        "description": "根据用户需求推荐Steam游戏（使用LLM评分，响应较慢但精准）",
+        "operationId": "recommend_games",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_query": {
+                    "type": "string",
+                    "description": "用户的游戏推荐需求描述",
+                    "example": "推荐一些开放世界RPG游戏，100元以内"
+                  },
+                  "max_results": {
+                    "type": "integer",
+                    "description": "返回的最大推荐游戏数量",
+                    "default": 5
+                  }
+                },
+                "required": ["user_query"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "推荐结果",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendGamesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/tools/search_games": {
+      "post": {
+        "summary": "快速搜索游戏",
+        "description": "根据关键词快速搜索Steam游戏（不使用LLM，响应速度快）",
+        "operationId": "search_games",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "keywords": {
+                    "type": "string",
+                    "description": "搜索关键词",
+                    "example": "射击游戏"
+                  },
+                  "max_price": {
+                    "type": "number",
+                    "description": "最大价格（人民币）",
+                    "example": 100
+                  },
+                  "max_results": {
+                    "type": "integer",
+                    "description": "返回的最大游戏数量",
+                    "default": 10
+                  }
+                },
+                "required": ["keywords"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "搜索结果",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchGamesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/tools/get_discounted_games": {
+      "post": {
+        "summary": "获取折扣游戏",
+        "description": "返回当前正在打折的Steam游戏",
+        "operationId": "get_discounted_games",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "min_discount": {
+                    "type": "integer",
+                    "description": "最低折扣百分比(0-100)",
+                    "default": 0,
+                    "example": 50
+                  },
+                  "max_price": {
+                    "type": "number",
+                    "description": "最大价格（人民币）",
+                    "example": 100
+                  },
+                  "max_results": {
+                    "type": "integer",
+                    "description": "返回的最大游戏数量",
+                    "default": 20
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "折扣游戏列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiscountedGamesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/tools/get_game_details": {
+      "post": {
+        "summary": "获取游戏详细信息",
+        "description": "根据游戏名称或AppID获取完整游戏信息",
+        "operationId": "get_game_details",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "game_identifier": {
+                    "type": "string",
+                    "description": "游戏名称或Steam AppID",
+                    "example": "艾尔登法环"
+                  }
+                },
+                "required": ["game_identifier"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "游戏详细信息",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameDetailsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/tools/get_top_games": {
+      "post": {
+        "summary": "获取热门游戏排行",
+        "description": "返回Steam平台热门游戏榜单",
+        "operationId": "get_top_games",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "max_results": {
+                    "type": "integer",
+                    "description": "返回的最大游戏数量",
+                    "default": 20
+                  },
+                  "filter_type": {
+                    "type": "string",
+                    "description": "排行榜类型",
+                    "enum": ["topsellers", "popularnew", "trendingweek"],
+                    "default": "topsellers",
+                    "example": "topsellers"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "热门游戏列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TopGamesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mcp/tools/get_free_games": {
+      "post": {
+        "summary": "获取免费游戏",
+        "description": "返回Steam免费游戏列表",
+        "operationId": "get_free_games",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "max_results": {
+                    "type": "integer",
+                    "description": "返回的最大游戏数量",
+                    "default": 20
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "可选的游戏标签过滤列表",
+                    "example": ["动作", "多人"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "免费游戏列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FreeGamesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Game": {
+        "type": "object",
+        "properties": {
+          "app_id": {
+            "type": "string",
+            "description": "Steam应用ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "游戏名称"
+          },
+          "price": {
+            "type": "number",
+            "description": "当前价格（人民币）"
+          },
+          "discount": {
+            "type": "integer",
+            "description": "折扣百分比"
+          },
+          "url": {
+            "type": "string",
+            "description": "Steam商店链接"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "游戏标签"
+          },
+          "description": {
+            "type": "string",
+            "description": "游戏简介"
+          }
+        }
+      },
+      "RecommendGamesResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "query": {
+            "type": "string"
+          },
+          "total_found": {
+            "type": "integer"
+          },
+          "total_evaluated": {
+            "type": "integer"
+          },
+          "recommendations_count": {
+            "type": "integer"
+          },
+          "recommendations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Game"
+            }
+          }
+        }
+      },
+      "SearchGamesResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "keywords": {
+            "type": "string"
+          },
+          "total_found": {
+            "type": "integer"
+          },
+          "games": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Game"
+            }
+          }
+        }
+      },
+      "DiscountedGamesResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "min_discount": {
+            "type": "integer"
+          },
+          "total_found": {
+            "type": "integer"
+          },
+          "games": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Game"
+            }
+          }
+        }
+      },
+      "GameDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "game_identifier": {
+            "type": "string"
+          },
+          "details": {
+            "type": "object",
+            "properties": {
+              "app_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "developers": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "publishers": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "release_date": {
+                "type": "string"
+              },
+              "price": {
+                "type": "object",
+                "properties": {
+                  "current": {
+                    "type": "number"
+                  },
+                  "original": {
+                    "type": "number"
+                  },
+                  "discount": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "genres": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "metacritic_score": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "TopGamesResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "filter_type": {
+            "type": "string"
+          },
+          "total_found": {
+            "type": "integer"
+          },
+          "games": {
+            "type": "array",
+            "items": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Game"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "rank": {
+                      "type": "integer",
+                      "description": "排名"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "FreeGamesResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "total_found": {
+            "type": "integer"
+          },
+          "games": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Game"
+            }
+          }
+        }
+      }
+    }
+  }
+}

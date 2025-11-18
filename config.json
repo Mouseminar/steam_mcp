@@ -1,0 +1,30 @@
+{
+  "llm": {
+    "model": "qwen-plus",
+    "enable_thinking": false,
+    "timeout": 300,
+    "max_retries": 2
+  },
+  "steam": {
+    "max_search_results": 20,
+    "max_output_results": 5,
+    "request_timeout": 10,
+    "search_delay": 0.2,
+    "max_price_default": 1000.0,
+    "language": "schinese",
+    "country_code": "CN"
+  },
+  "recommendation": {
+    "show_detail_prompt": true,
+    "save_json": true,
+    "output_file": "recommendations.json"
+  },
+  "logging": {
+    "enabled": true,
+    "level": "INFO",
+    "file": "logs/steam_agent.log",
+    "max_file_size_mb": 10,
+    "backup_count": 5,
+    "console_output": true
+  }
+}
