@@ -1,0 +1,9 @@
+edition: 3.0.0
+name: steam
+services:
+  modest-steam:
+    component: fc3
+    actions:
+      pre-deploy:
+        - run: pip install -r requirements.txt
+          path: ./   # 🔥 指定在仓库根目录执行
