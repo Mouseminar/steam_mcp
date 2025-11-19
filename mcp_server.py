@@ -373,7 +373,7 @@ def main():
     
     # 启动MCP服务器
     mcp.run(
-        transport="streamableHttp",  # 使用 streamableHttp 传输
+        transport="sse",  # 使用 SSE (Server-Sent Events) 传输
         host="0.0.0.0", 
         port=8000,
         path="/mcp",
