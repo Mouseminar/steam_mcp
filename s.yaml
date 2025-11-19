@@ -6,4 +6,12 @@ services:
     actions:
       pre-deploy:
         - run: pip install -r requirements.txt
-          path: ./   # 🔥 指定在仓库根目录执行
+          path: /kaniko/tmp/workspace   # 👈 强制在正确目录执行
+    props:
+      region: cn-hangzhou
+      runtime: python3.10
+      functionName: modest-steam
+      code: ./
+      handler: handler.handler
+      timeout: 60
+      memorySize: 512
