@@ -376,7 +376,7 @@ def main():
         transport="sse",  # 使用 SSE (Server-Sent Events) 传输
         host="0.0.0.0", 
         port=8000,
-        path="/mcp",
+        path="/sse",
         log_level="debug",
     )
 
