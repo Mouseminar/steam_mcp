@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- 背景渐变 -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1b2838;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2a475e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accent-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#66c0f4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4a9fd8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 圆角矩形背景 -->
+  <rect width="512" height="512" rx="100" fill="url(#bg-gradient)"/>
+  
+  <!-- 游戏手柄轮廓 -->
+  <path d="M 256 180 
+           C 200 180, 150 200, 120 240
+           L 100 280
+           C 90 300, 90 320, 100 340
+           L 120 360
+           C 140 380, 170 390, 200 390
+           L 220 390
+           C 240 390, 250 380, 250 360
+           L 250 340
+           L 262 340
+           L 262 360
+           C 262 380, 272 390, 292 390
+           L 312 390
+           C 342 390, 372 380, 392 360
+           L 412 340
+           C 422 320, 422 300, 412 280
+           L 392 240
+           C 362 200, 312 180, 256 180 Z" 
+        fill="url(#accent-gradient)" opacity="0.3" stroke="#66c0f4" stroke-width="4"/>
+  
+  <!-- 左侧方向键 -->
+  <circle cx="180" cy="300" r="12" fill="#66c0f4"/>
+  <circle cx="150" cy="270" r="12" fill="#66c0f4"/>
+  <circle cx="210" cy="270" r="12" fill="#66c0f4"/>
+  <circle cx="180" cy="240" r="12" fill="#66c0f4"/>
+  
+  <!-- 右侧按钮 -->
+  <circle cx="332" cy="300" r="12" fill="#ff9800"/>
+  <circle cx="362" cy="270" r="12" fill="#ff9800"/>
+  <circle cx="332" cy="240" r="12" fill="#ff9800"/>
+  <circle cx="302" cy="270" r="12" fill="#ff9800"/>
+  
+  <!-- AI 星星/推荐图标 -->
+  <path d="M 256 100 L 268 135 L 305 135 L 275 155 L 288 190 L 256 168 L 224 190 L 237 155 L 207 135 L 244 135 Z" 
+        fill="#ffd700" stroke="#ffb700" stroke-width="2"/>
+  
+  <!-- 小星星装饰 -->
+  <circle cx="200" cy="120" r="4" fill="#ffd700" opacity="0.6"/>
+  <circle cx="312" cy="120" r="4" fill="#ffd700" opacity="0.6"/>
+  <circle cx="230" cy="90" r="3" fill="#66c0f4" opacity="0.4"/>
+  <circle cx="282" cy="90" r="3" fill="#66c0f4" opacity="0.4"/>
+  
+  <!-- 底部文字 Steam -->
+  <text x="256" y="450" font-family="Arial, sans-serif" font-size="48" font-weight="bold" 
+        fill="#66c0f4" text-anchor="middle" opacity="0.8">STEAM</text>
+  <text x="256" y="480" font-family="Arial, sans-serif" font-size="24" 
+        fill="#66c0f4" text-anchor="middle" opacity="0.6">AI Recommender</text>
+</svg>

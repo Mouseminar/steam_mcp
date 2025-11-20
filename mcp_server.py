@@ -14,15 +14,34 @@ sys.path.insert(0, src_path)
 
 from fastmcp import FastMCP
 from dotenv import load_dotenv
-from src.recommendation_agent import SteamRecommendationAgent
+
+# 延迟导入重型模块，加快启动速度
+# from src.recommendation_agent import SteamRecommendationAgent
 from src.config_loader import config
 from src.logger import logger
 
 # 加载环境变量
 load_dotenv()
 
+# 检测运行环境
+IS_ALIYUN_FC = os.environ.get('FC_RUNTIME') is not None
+if IS_ALIYUN_FC:
+    print("✓ 检测到阿里云函数计算环境")
+
 # 创建MCP服务器实例
 mcp = FastMCP("steam-game-recommender 🎮")
+
+
+def _get_recommendation_agent():
+    """懒加载推荐Agent（仅在需要时导入）"""
+    from src.recommendation_agent import SteamRecommendationAgent
+    return SteamRecommendationAgent()
+
+
+def _get_steam_crawler():
+    """懒加载Steam爬虫（仅在需要时导入）"""
+    from src.steam_crawler import SteamCrawler
+    return SteamCrawler()
 
 
 @mcp.tool()
@@ -47,8 +66,8 @@ async def recommend_games(
     print(f"\n🎮 MCP服务器收到请求: {user_query}")
     
     try:
-        # 创建推荐Agent
-        agent = SteamRecommendationAgent()
+        # 懒加载：仅在需要时创建Agent
+        agent = _get_recommendation_agent()
         
         # 获取推荐结果
         result = agent.recommend_games(user_query, max_output_results=max_results)
@@ -101,9 +120,7 @@ async def search_games(
     print(f"\n🔍 MCP快速搜索: {keywords}")
     
     try:
-        from src.steam_crawler import SteamCrawler
-        
-        crawler = SteamCrawler()
+        crawler = _get_steam_crawler()
         games = crawler.search_games(keywords, max_price=max_price, max_results=max_results)
         
         response = {
@@ -152,9 +169,7 @@ async def get_discounted_games(
     print(f"\n🎁 MCP获取折扣游戏: 折扣≥{min_discount}%")
     
     try:
-        from src.steam_crawler import SteamCrawler
-        
-        crawler = SteamCrawler()
+        crawler = _get_steam_crawler()
         games = crawler.get_discounted_games(
             min_discount=min_discount,
             max_price=max_price,
@@ -210,9 +225,7 @@ async def get_game_details(
     print(f"\n📖 MCP获取游戏详情: {game_identifier}")
     
     try:
-        from src.steam_crawler import SteamCrawler
-        
-        crawler = SteamCrawler()
+        crawler = _get_steam_crawler()
         
         # 判断是AppID还是游戏名称
         if game_identifier.isdigit():
@@ -275,9 +288,7 @@ async def get_top_games(
     print(f"\n🔥 MCP获取热门游戏: {filter_type}")
     
     try:
-        from src.steam_crawler import SteamCrawler
-        
-        crawler = SteamCrawler()
+        crawler = _get_steam_crawler()
         games = crawler.get_top_games(
             max_results=max_results,
             filter_type=filter_type
@@ -326,9 +337,7 @@ async def get_free_games(
     print(f"\n🆓 MCP获取免费游戏")
     
     try:
-        from src.steam_crawler import SteamCrawler
-        
-        crawler = SteamCrawler()
+        crawler = _get_steam_crawler()
         games = crawler.get_free_games(
             max_results=max_results,
             tags=tags
@@ -357,9 +366,21 @@ async def get_free_games(
 
 def main():
     """启动MCP服务器"""
+    import time
+    start_time = time.time()
+    
     print("="*70)
     print("🎮 Steam游戏推荐MCP服务器")
     print("="*70)
+    
+    # 打印环境信息
+    if IS_ALIYUN_FC:
+        print(f"运行环境: 阿里云函数计算")
+        print(f"Runtime: {os.environ.get('FC_RUNTIME', 'unknown')}")
+        print(f"函数名称: {os.environ.get('FC_FUNCTION_NAME', 'unknown')}")
+    else:
+        print(f"运行环境: 本地/其他")
+    
     print(f"LLM模型: {config.get('llm.model')}")
     print(f"LLM超时: {config.get('llm.timeout', 300)}秒")
     print(f"最大搜索结果: {config.get('steam.max_search_results')}")
@@ -369,16 +390,33 @@ def main():
     
     logger.info("="*60)
     logger.info("Steam MCP服务器启动")
+    if IS_ALIYUN_FC:
+        logger.info("环境: 阿里云函数计算")
     logger.info("="*60)
     
+    # 从环境变量获取端口（适配阿里云函数计算）
+    port = int(os.environ.get('FC_SERVER_PORT', '8000'))
+    print(f"监听端口: {port}")
+    print(f"SSE 路径: /sse")
+    
+    # 记录启动时间
+    startup_time = time.time() - start_time
+    print(f"启动准备耗时: {startup_time:.2f}秒")
+    print("="*70)
+    
     # 启动MCP服务器
-    mcp.run(
-        transport="sse",  # 使用 SSE (Server-Sent Events) 传输
-        host="0.0.0.0", 
-        port=8000,
-        path="/sse",
-        log_level="debug",
-    )
+    try:
+        mcp.run(
+            transport="sse",  # 使用 SSE (Server-Sent Events) 传输
+            host="0.0.0.0", 
+            port=port,
+            path="/sse",
+            log_level="info",  # 阿里云环境减少日志输出
+        )
+    except Exception as e:
+        logger.error(f"MCP服务器启动失败: {e}")
+        print(f"❌ 服务器启动失败: {e}")
+        raise
 
 
 if __name__ == "__main__":
