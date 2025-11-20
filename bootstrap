@@ -1,0 +1,33 @@
+"""
+阿里云函数计算自定义运行时 Bootstrap 启动文件
+符合 FC Custom Runtime 规范
+"""
+import os
+import sys
+import subprocess
+import signal
+
+# 添加当前目录到 Python 路径
+sys.path.insert(0, os.path.dirname(__file__))
+
+def start_server():
+    """启动 MCP 服务器"""
+    print("="*70, flush=True)
+    print("🚀 阿里云函数计算 - Bootstrap 启动", flush=True)
+    print("="*70, flush=True)
+    print(f"✓ 工作目录: {os.getcwd()}", flush=True)
+    print(f"✓ Python版本: {sys.version}", flush=True)
+    print(f"✓ FC_SERVER_PORT: {os.environ.get('FC_SERVER_PORT', '未设置')}", flush=True)
+    print(f"✓ FC_RUNTIME: {os.environ.get('FC_RUNTIME', '未设置')}", flush=True)
+    print("="*70, flush=True)
+    
+    # 启动 MCP 服务器进程
+    cmd = [sys.executable, "mcp_server.py"]
+    print(f"✓ 执行命令: {' '.join(cmd)}", flush=True)
+    
+    # 使用 exec 替换当前进程，这样信号处理会正确传递
+    os.execvp(sys.executable, cmd)
+
+
+if __name__ == "__main__":
+    start_server()

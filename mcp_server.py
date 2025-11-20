@@ -8,9 +8,17 @@ import sys
 import os
 from typing import Optional
 
+# 确保输出立即刷新（阿里云函数计算环境）
+sys.stdout.reconfigure(line_buffering=True) if hasattr(sys.stdout, 'reconfigure') else None
+sys.stderr.reconfigure(line_buffering=True) if hasattr(sys.stderr, 'reconfigure') else None
+
+print("🔄 [STARTUP] mcp_server.py 开始加载...", flush=True)
+
 # 添加src目录到路径
 src_path = os.path.join(os.path.dirname(__file__), 'src')
 sys.path.insert(0, src_path)
+
+print(f"🔄 [STARTUP] Python路径已配置: {src_path}", flush=True)
 
 from fastmcp import FastMCP
 from dotenv import load_dotenv
@@ -20,16 +28,22 @@ from dotenv import load_dotenv
 from src.config_loader import config
 from src.logger import logger
 
+print("🔄 [STARTUP] 基础模块加载完成", flush=True)
+
 # 加载环境变量
 load_dotenv()
 
 # 检测运行环境
 IS_ALIYUN_FC = os.environ.get('FC_RUNTIME') is not None
 if IS_ALIYUN_FC:
-    print("✓ 检测到阿里云函数计算环境")
+    print("✓ [STARTUP] 检测到阿里云函数计算环境", flush=True)
+else:
+    print("✓ [STARTUP] 本地环境", flush=True)
 
 # 创建MCP服务器实例
 mcp = FastMCP("steam-game-recommender 🎮")
+
+print("✓ [STARTUP] FastMCP 实例创建完成", flush=True)
 
 
 def _get_recommendation_agent():
@@ -372,33 +386,27 @@ def main():
     
     start_time = time.time()
     
-    print("="*70, flush=True)
-    print("🎮 Steam游戏推荐MCP服务器", flush=True)
+    print("\n" + "="*70, flush=True)
+    print("🎮 Steam游戏推荐MCP服务器 - 主函数启动", flush=True)
     print("="*70, flush=True)
     
     # 打印环境信息
     if IS_ALIYUN_FC:
-        print(f"✓ 运行环境: 阿里云函数计算", flush=True)
-        print(f"✓ Runtime: {os.environ.get('FC_RUNTIME', 'unknown')}", flush=True)
-        print(f"✓ 函数名称: {os.environ.get('FC_FUNCTION_NAME', 'unknown')}", flush=True)
-        print(f"✓ 工作目录: {os.getcwd()}", flush=True)
-        print(f"✓ Python路径: {sys.executable}", flush=True)
+        print(f"✓ [ENV] 运行环境: 阿里云函数计算", flush=True)
+        print(f"✓ [ENV] Runtime: {os.environ.get('FC_RUNTIME', 'unknown')}", flush=True)
+        print(f"✓ [ENV] 函数名称: {os.environ.get('FC_FUNCTION_NAME', 'unknown')}", flush=True)
+        print(f"✓ [ENV] 工作目录: {os.getcwd()}", flush=True)
+        print(f"✓ [ENV] Python路径: {sys.executable}", flush=True)
+        print(f"✓ [ENV] 脚本路径: {__file__}", flush=True)
     else:
-        print(f"运行环境: 本地/其他", flush=True)
+        print(f"✓ [ENV] 运行环境: 本地/其他", flush=True)
     
-    print(f"✓ LLM模型: {config.get('llm.model')}", flush=True)
-    print(f"⚠️  智能推荐工具可能需要1-3分钟，请耐心等待", flush=True)
-    
-    logger.info("="*60)
-    logger.info("Steam MCP服务器启动")
-    if IS_ALIYUN_FC:
-        logger.info("环境: 阿里云函数计算")
-    logger.info("="*60)
+    print(f"✓ [CONFIG] LLM模型: {config.get('llm.model')}", flush=True)
     
     # 从环境变量获取端口（适配阿里云函数计算）
     port = int(os.environ.get('FC_SERVER_PORT', '8000'))
-    print(f"✓ 监听端口: {port}", flush=True)
-    print(f"✓ SSE 路径: /sse", flush=True)
+    print(f"✓ [CONFIG] 监听端口: {port}", flush=True)
+    print(f"✓ [CONFIG] SSE 路径: /sse", flush=True)
     
     # 测试端口是否可用
     try:
@@ -406,34 +414,54 @@ def main():
         test_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         test_socket.bind(('0.0.0.0', port))
         test_socket.close()
-        print(f"✓ 端口 {port} 可用", flush=True)
+        print(f"✓ [PORT] 端口 {port} 可用", flush=True)
     except Exception as e:
-        print(f"⚠️  端口 {port} 测试: {e}", flush=True)
+        print(f"⚠️  [PORT] 端口 {port} 测试: {e}", flush=True)
     
     # 记录启动时间
     startup_time = time.time() - start_time
-    print(f"✓ 启动准备耗时: {startup_time:.3f}秒", flush=True)
+    print(f"✓ [TIMING] 启动准备耗时: {startup_time:.3f}秒", flush=True)
     print("="*70, flush=True)
-    print("🚀 正在启动 FastMCP 服务器...", flush=True)
+    print("🚀 [MCP] 正在调用 mcp.run()...", flush=True)
+    print("="*70, flush=True)
     sys.stdout.flush()
+    sys.stderr.flush()
+    
+    logger.info("="*60)
+    logger.info("Steam MCP服务器启动")
+    logger.info(f"环境: {'阿里云FC' if IS_ALIYUN_FC else '本地'}")
+    logger.info(f"端口: {port}")
+    logger.info("="*60)
     
     # 启动MCP服务器
     try:
-        logger.info(f"调用 mcp.run(host=0.0.0.0, port={port}, path=/sse)")
+        logger.info(f"调用 mcp.run(host=0.0.0.0, port={port}, path=/sse, transport=sse)")
+        print(f"🔄 [MCP] 开始启动 FastMCP (host=0.0.0.0, port={port})...", flush=True)
+        
         mcp.run(
             transport="sse",  # 使用 SSE (Server-Sent Events) 传输
             host="0.0.0.0", 
             port=port,
             path="/sse",
-            log_level="info",  # 阿里云环境减少日志输出
+            log_level="info",
         )
+        
+        print("⚠️  [MCP] mcp.run() 返回了（这不应该发生）", flush=True)
+        
     except Exception as e:
         logger.error(f"MCP服务器启动失败: {e}")
-        print(f"❌ 服务器启动失败: {e}", flush=True)
+        print(f"❌ [ERROR] 服务器启动失败: {e}", flush=True)
         import traceback
         traceback.print_exc()
+        sys.stdout.flush()
+        sys.stderr.flush()
         raise
 
 
 if __name__ == "__main__":
+    print("🔄 [ENTRY] __main__ 入口点被调用", flush=True)
+    print(f"🔄 [ENTRY] 当前工作目录: {os.getcwd()}", flush=True)
+    print(f"🔄 [ENTRY] sys.argv: {sys.argv}", flush=True)
+    sys.stdout.flush()
+    
     main()
