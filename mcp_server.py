@@ -367,26 +367,27 @@ async def get_free_games(
 def main():
     """启动MCP服务器"""
     import time
+    import sys
+    import socket
+    
     start_time = time.time()
     
-    print("="*70)
-    print("🎮 Steam游戏推荐MCP服务器")
-    print("="*70)
+    print("="*70, flush=True)
+    print("🎮 Steam游戏推荐MCP服务器", flush=True)
+    print("="*70, flush=True)
     
     # 打印环境信息
     if IS_ALIYUN_FC:
-        print(f"运行环境: 阿里云函数计算")
-        print(f"Runtime: {os.environ.get('FC_RUNTIME', 'unknown')}")
-        print(f"函数名称: {os.environ.get('FC_FUNCTION_NAME', 'unknown')}")
+        print(f"✓ 运行环境: 阿里云函数计算", flush=True)
+        print(f"✓ Runtime: {os.environ.get('FC_RUNTIME', 'unknown')}", flush=True)
+        print(f"✓ 函数名称: {os.environ.get('FC_FUNCTION_NAME', 'unknown')}", flush=True)
+        print(f"✓ 工作目录: {os.getcwd()}", flush=True)
+        print(f"✓ Python路径: {sys.executable}", flush=True)
     else:
-        print(f"运行环境: 本地/其他")
+        print(f"运行环境: 本地/其他", flush=True)
     
-    print(f"LLM模型: {config.get('llm.model')}")
-    print(f"LLM超时: {config.get('llm.timeout', 300)}秒")
-    print(f"最大搜索结果: {config.get('steam.max_search_results')}")
-    print(f"最大输出结果: {config.get('steam.max_output_results')}")
-    print(f"⚠️  智能推荐工具可能需要1-3分钟，请耐心等待")
-    print("="*70)
+    print(f"✓ LLM模型: {config.get('llm.model')}", flush=True)
+    print(f"⚠️  智能推荐工具可能需要1-3分钟，请耐心等待", flush=True)
     
     logger.info("="*60)
     logger.info("Steam MCP服务器启动")
@@ -396,16 +397,29 @@ def main():
     
     # 从环境变量获取端口（适配阿里云函数计算）
     port = int(os.environ.get('FC_SERVER_PORT', '8000'))
-    print(f"监听端口: {port}")
-    print(f"SSE 路径: /sse")
+    print(f"✓ 监听端口: {port}", flush=True)
+    print(f"✓ SSE 路径: /sse", flush=True)
+    
+    # 测试端口是否可用
+    try:
+        test_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        test_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        test_socket.bind(('0.0.0.0', port))
+        test_socket.close()
+        print(f"✓ 端口 {port} 可用", flush=True)
+    except Exception as e:
+        print(f"⚠️  端口 {port} 测试: {e}", flush=True)
     
     # 记录启动时间
     startup_time = time.time() - start_time
-    print(f"启动准备耗时: {startup_time:.2f}秒")
-    print("="*70)
+    print(f"✓ 启动准备耗时: {startup_time:.3f}秒", flush=True)
+    print("="*70, flush=True)
+    print("🚀 正在启动 FastMCP 服务器...", flush=True)
+    sys.stdout.flush()
     
     # 启动MCP服务器
     try:
+        logger.info(f"调用 mcp.run(host=0.0.0.0, port={port}, path=/sse)")
         mcp.run(
             transport="sse",  # 使用 SSE (Server-Sent Events) 传输
             host="0.0.0.0", 
@@ -415,7 +429,9 @@ def main():
         )
     except Exception as e:
         logger.error(f"MCP服务器启动失败: {e}")
-        print(f"❌ 服务器启动失败: {e}")
+        print(f"❌ 服务器启动失败: {e}", flush=True)
+        import traceback
+        traceback.print_exc()
         raise
 
 
