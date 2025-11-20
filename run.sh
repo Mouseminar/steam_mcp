@@ -11,13 +11,22 @@ echo "当前目录: $(pwd)" >&2
 echo "用户: $(whoami)" >&2
 echo "========================================" >&2
 
-# 查找 Python
-if [ -f "/opt/python3.12/bin/python" ]; then
+# 查找 Python 3.12（优先使用层中的 Python 3.12）
+if [ -f "/opt/python3.12/bin/python3.12" ]; then
+    PYTHON="/opt/python3.12/bin/python3.12"
+    echo "✓ 找到 Python 3.12 (层)" >&2
+elif [ -f "/opt/python3.12/bin/python" ]; then
     PYTHON="/opt/python3.12/bin/python"
-elif [ -f "/usr/bin/python3" ]; then
-    PYTHON="/usr/bin/python3"
+    echo "✓ 找到 Python 3.12" >&2
+elif [ -f "/usr/local/bin/python3.12" ]; then
+    PYTHON="/usr/local/bin/python3.12"
+    echo "✓ 找到 Python 3.12 (系统)" >&2
+elif [ -f "/usr/bin/python3.12" ]; then
+    PYTHON="/usr/bin/python3.12"
+    echo "✓ 找到 Python 3.12 (系统)" >&2
 else
-    PYTHON="python"
+    echo "⚠️  未找到 Python 3.12，使用默认 Python" >&2
+    PYTHON="python3"
 fi
 
 echo "Python 路径: $PYTHON" >&2

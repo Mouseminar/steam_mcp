@@ -7,8 +7,21 @@ echo "========================================="
 echo "📦 开始安装依赖"
 echo "========================================="
 echo "当前目录: $(pwd)"
-echo "Python 版本: $(python --version)"
-echo "Pip 版本: $(pip --version)"
+
+# 查找 Python 3.12
+if [ -f "/opt/python3.12/bin/python3.12" ]; then
+    PYTHON="/opt/python3.12/bin/python3.12"
+elif [ -f "/opt/python3.12/bin/python" ]; then
+    PYTHON="/opt/python3.12/bin/python"
+elif command -v python3.12 &> /dev/null; then
+    PYTHON="python3.12"
+else
+    echo "⚠️  警告: 未找到 Python 3.12，使用默认 Python"
+    PYTHON="python3"
+fi
+
+echo "Python 版本: $($PYTHON --version)"
+echo "Pip 版本: $($PYTHON -m pip --version)"
 echo "系统架构: $(uname -m)"
 echo "========================================="
 
@@ -16,12 +29,12 @@ echo "========================================="
 mkdir -p python
 
 # 升级 pip 和 setuptools
-pip install --upgrade pip setuptools wheel
+$PYTHON -m pip install --upgrade pip setuptools wheel
 
 # 安装依赖到 python 目录
 # 不使用预编译包限制，让 pip 自动选择合适的版本
 echo "安装依赖到 ./python 目录..."
-pip install -r requirements.txt -t python --upgrade --no-cache-dir
+$PYTHON -m pip install -r requirements.txt -t python --upgrade --no-cache-dir
 
 echo "========================================="
 echo "✓ 依赖安装完成"
