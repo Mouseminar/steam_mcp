@@ -1,0 +1,49 @@
+#!/bin/bash
+# 阿里云函数计算启动脚本
+# 使用绝对路径确保能找到 Python 和代码文件
+
+set -e
+
+echo "========================================" >&2
+echo "🚀 启动脚本开始执行" >&2
+echo "========================================" >&2
+echo "当前目录: $(pwd)" >&2
+echo "用户: $(whoami)" >&2
+echo "========================================" >&2
+
+# 查找 Python
+if [ -f "/opt/python3.12/bin/python" ]; then
+    PYTHON="/opt/python3.12/bin/python"
+elif [ -f "/usr/bin/python3" ]; then
+    PYTHON="/usr/bin/python3"
+else
+    PYTHON="python"
+fi
+
+echo "Python 路径: $PYTHON" >&2
+echo "Python 版本: $($PYTHON --version)" >&2
+
+# 确保在代码目录
+if [ -d "/code" ]; then
+    cd /code
+    echo "切换到 /code 目录" >&2
+else
+    echo "警告: /code 目录不存在，当前目录: $(pwd)" >&2
+fi
+
+# 列出文件
+echo "目录内容:" >&2
+ls -la >&2
+
+# 检查 mcp_server.py 是否存在
+if [ ! -f "mcp_server.py" ]; then
+    echo "错误: mcp_server.py 不存在！" >&2
+    exit 1
+fi
+
+echo "========================================" >&2
+echo "🚀 启动 MCP 服务器" >&2
+echo "========================================" >&2
+
+# 使用 exec 替换当前进程
+exec $PYTHON mcp_server.py
